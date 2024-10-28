@@ -2,7 +2,8 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Bibliotecas from './pages/Bibliotecas';
-import Navbar from './components/NavBar'; // Asegúrate de que coincida con el nombre exacto del archivo
+import GestionLibros from './pages/GestionLibros';
+import Navbar from './components/NavBar'; 
 
 
 function App() {
@@ -16,7 +17,7 @@ function App() {
         <Routes>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/bibliotecas" element={<Bibliotecas />} />
-          {/* Agrega aquí otras rutas según sea necesario */}
+          <Route path="/bibliotecas/:id/libros" element={<GestionLibros />} /> 
         </Routes>
       </div>
     </Router>

@@ -52,6 +52,6 @@ export const obtenerLibrosPorBiblioteca = (req, res) => {
             console.error('Error al realizar la consulta:', error);
             return res.status(500).send('Error al realizar la consulta');
         }
-        res.status(200).json(results[0]); // Asumiendo que el resultado está en la primera posición
+        res.status(200).json(results[0]); 
     });
 };

@@ -4,6 +4,7 @@ import cors from 'cors';
 import session from 'express-session';
 import bibliotecaRoutes from './routes/Biblioteca.js'; // Importar el archivo de rutas de Biblioteca
 import authRoutes from './routes/authRoutes.js';
+import usuarioRoutes from './routes/usuarioRoutes.js';
 import db from './config/db.js'; // Importar la conexión MySQL desde config/db.js
 import dotenv from 'dotenv';
 
@@ -27,9 +28,8 @@ app.use(session({
 }));
 
 app.use('/auth', authRoutes);
-
-// Usar las rutas de biblioteca
 app.use('/bibliotecas', bibliotecaRoutes);
+app.use('/usuarios', usuarioRoutes);
 
 // Conectar a la base de datos y arrancar el servidor
 db.connect((error) => {

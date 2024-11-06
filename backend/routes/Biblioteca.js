@@ -1,3 +1,4 @@
+// backend/routes/Biblioteca.js
 import express from 'express';
 import {
     obtenerBibliotecas,

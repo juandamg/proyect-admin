@@ -2,10 +2,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function Navbar() {
+function Navbar({ onLogout }) {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
-      <Link className="navbar-brand ms-3" to="/dashboard">Sistema de Bibliotecas</Link> {/* Agrega ms-3 aquí */}
+      <Link className="navbar-brand ms-3" to="/dashboard">Sistema de Bibliotecas</Link>
       <button
         className="navbar-toggler"
         type="button"
@@ -29,7 +29,7 @@ function Navbar() {
             <Link className="nav-link" to="/configuracion">Configuración</Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link" to="/logout">Cerrar Sesión</Link>
+            <button className="nav-link btn btn-link" onClick={onLogout}>Cerrar Sesión</button>
           </li>
         </ul>
       </div>

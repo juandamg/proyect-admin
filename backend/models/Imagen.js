@@ -6,12 +6,8 @@ const imagenSchema = new mongoose.Schema({
         type: Number, // ID del libro en la base de datos relacional (SQL)
         required: true,
     },
-    filename: {
-        type: String,
-        required: true,
-    },
-    path: {
-        type: String,
+    data: {
+        type: Buffer, // Aquí almacenaremos los datos binarios de la imagen
         required: true,
     },
     mimetype: {
@@ -26,6 +22,8 @@ const imagenSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+}, {
+    collection: 'imagen' // Nombre de la colección en MongoDB
 });
 
 export default mongoose.model('Imagen', imagenSchema);

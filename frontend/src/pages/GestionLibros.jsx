@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import LibroModal from '../components/LibroModal';
+import PortadaModal from '../components/PortadaModal';
 
 function GestionLibros() {
     const { id } = useParams(); // Obtener el id de la biblioteca desde la URL
@@ -9,6 +10,9 @@ function GestionLibros() {
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [selectedLibro, setSelectedLibro] = useState(null);
+    const [showPortadaModal, setShowPortadaModal] = useState(false);
+    const [portadaUrl, setPortadaUrl] = useState(null);
+    const [libroIdForPortada, setLibroIdForPortada] = useState(null);
 
     useEffect(() => {
         fetchLibros();
@@ -19,6 +23,7 @@ function GestionLibros() {
             const response = await fetch(`http://localhost:3000/bibliotecas/${id}/libros`);
             if (!response.ok) throw new Error('Error al obtener los libros');
             const data = await response.json();
+            console.log("Datos de libros recibidos:", data); 
             setLibros(data);
         } catch (error) {
             console.error(error.message);
@@ -72,44 +77,42 @@ function GestionLibros() {
         }
     };
 
-    const handleUploadPortada = async (libroId) => {
-        const formData = new FormData();
-        const fileInput = document.createElement("input");
-        fileInput.type = "file";
-        fileInput.accept = "image/*";
-        fileInput.onchange = async (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                formData.append("imagen", file);
-                formData.append("libroId", libroId);
-
-                try {
-                    const response = await fetch(`http://localhost:3000/imagenes/upload`, {
-                        method: 'POST',
-                        body: formData,
-                    });
-                    if (!response.ok) throw new Error('Error al cargar la portada');
-                    alert("Portada cargada exitosamente");
-                } catch (error) {
-                    console.error(error.message);
-                    alert(error.message);
-                }
-            }
-        };
-        fileInput.click();
+    const openPortadaModalForUpload = (libroId) => {
+        setLibroIdForPortada(libroId);
+        setPortadaUrl(null); 
+        setShowPortadaModal(true);
     };
 
-    const handleViewPortada = async (libroId) => {
+    const openPortadaModalForView = async (libroId) => {
         try {
             const response = await fetch(`http://localhost:3000/imagenes/${libroId}`);
             if (!response.ok) throw new Error('Portada no encontrada');
             const imageUrl = URL.createObjectURL(await response.blob());
-            window.open(imageUrl, "_blank");
+            setPortadaUrl(imageUrl); // Establecer la URL de la portada
+            setShowPortadaModal(true);
+            setLibroIdForPortada(libroId);
         } catch (error) {
             console.error(error.message);
             alert(error.message);
         }
     };
+
+    const handleUploadPortada = async (formData) => {
+        try {
+            const response = await fetch(`http://localhost:3000/imagenes/upload`, {
+                method: 'POST',
+                body: formData,
+            });
+            if (!response.ok) throw new Error('Error al cargar la portada');
+            alert("Portada cargada exitosamente");
+            setShowPortadaModal(false);
+            setPortadaUrl(null);
+        } catch (error) {
+            console.error(error.message);
+            alert(error.message);
+        }
+    };
+        
 
     if (loading) return <p>Cargando libros...</p>;
 
@@ -147,10 +150,10 @@ function GestionLibros() {
                                 <button className="btn btn-danger btn-sm me-2" onClick={() => handleDeleteLibro(libro.id)}>
                                     Eliminar
                                 </button>
-                                <button className="btn btn-warning btn-sm me-2" onClick={() => handleUploadPortada(libro.id)}>
+                                <button className="btn btn-warning btn-sm me-2" onClick={() => openPortadaModalForUpload(libro.id)}>
                                     Cargar Portada
                                 </button>
-                                <button className="btn btn-info btn-sm" onClick={() => handleViewPortada(libro.id)}>
+                                <button className="btn btn-info btn-sm" onClick={() => openPortadaModalForView(libro.id)}>
                                     Ver Portada
                                 </button>
                             </td>
@@ -175,9 +178,18 @@ function GestionLibros() {
                     onSave={(libroEditado) => { handleEditLibro(libroEditado); setShowEditModal(false); }}
                 />
             )}
+
+            {/* Modal para ver o cargar portada */}
+            {showPortadaModal && (
+                <PortadaModal
+                    libroId={libroIdForPortada}
+                    onClose={() => setShowPortadaModal(false)}
+                    onUpload={handleUploadPortada}
+                    portadaUrl={portadaUrl}
+                />
+            )}
         </div>
     );
 }
 
 export default GestionLibros;
-

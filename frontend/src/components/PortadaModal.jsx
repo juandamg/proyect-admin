@@ -5,7 +5,14 @@ function PortadaModal({ libroId, onClose, onUpload, portadaUrl }) {
     const [file, setFile] = useState(null);
 
     const handleFileChange = (e) => {
-        setFile(e.target.files[0]);
+        const file = e.target.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append("imagen", file);
+            formData.append("libroId", libroId); // Verifica que `libroId` tiene un valor válido aquí
+    
+            onUpload(formData);
+        }
     };
 
     const handleUpload = () => {
@@ -16,10 +23,13 @@ function PortadaModal({ libroId, onClose, onUpload, portadaUrl }) {
 
         const formData = new FormData();
         formData.append("imagen", file);
-        formData.append("libroId", libroId);
+        formData.append("libroId", Number(libroId));
 
         onUpload(formData);
     };
+
+        // Imprimir libroId para verificar su valor
+        console.log("libroId en frontend (PortadaModal):", libroId);
 
     return (
         <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>

@@ -9,6 +9,8 @@ import db from './config/db.js';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import imagenRoutes from './routes/imagenRoutes.js';
+import categoriaRoutes from './routes/categoriaRotues.js';
+import estadoRoutes from './routes/estadoRoutes.js';
 
 dotenv.config(); // Cargar variables de entorno desde .env
 
@@ -32,7 +34,10 @@ app.use(session({
 app.use('/auth', authRoutes);
 app.use('/bibliotecas', bibliotecaRoutes);
 app.use('/usuarios', usuarioRoutes);
-app.use('/imagenes', imagenRoutes); // Rutas para manejar imágenes
+app.use('/imagenes', imagenRoutes); 
+app.use('/categorias', categoriaRoutes); 
+app.use('/estados', estadoRoutes);
+
 
 // Conectar a la base de datos MySQL
 db.connect((error) => {

@@ -15,8 +15,13 @@ export const obtenerLibros = (req, res) => {
 
 // Crear un nuevo libro en una biblioteca específica
 export const crearLibro = (req, res) => {
-    const bibliotecaId = req.params.bibliotecaId;
+    const bibliotecaId = req.params.bibliotecaId; // ID de la biblioteca desde la URL
     const { titulo, autor, isbn, editorial, n_paginas, categoria_id_categoria, estado_libro_id_estado } = req.body;
+
+    if (!bibliotecaId || !titulo || !autor || !isbn || !editorial || !n_paginas || !categoria_id_categoria || !estado_libro_id_estado) {
+        return res.status(400).send("Error: Faltan datos obligatorios para crear el libro.");
+    }
+
     const nuevoLibro = {
         titulo,
         autor,
@@ -31,7 +36,7 @@ export const crearLibro = (req, res) => {
     db.query('INSERT INTO libro SET ?', nuevoLibro, (error, results) => {
         if (error) {
             console.error('Error al insertar el libro:', error);
-            return res.status(500).send('Error al crear el libro');
+            return res.status(500).send(`Error al crear el libro: ${error.message}`);
         }
         res.status(201).json({ id_libro: results.insertId, ...nuevoLibro });
     });
@@ -39,17 +44,13 @@ export const crearLibro = (req, res) => {
 
 // Actualizar un libro existente
 export const actualizarLibro = (req, res) => {
-    const libroId = req.params.libroId;
-    const { titulo, autor, isbn, editorial, n_paginas, categoria_id_categoria, estado_libro_id_estado, sede_id_sede } = req.body;
+    const libroId = req.params.id_libro;
+    const { nombre_libro, nombre_categoria, estado_libro } = req.body; 
+
     const libroActualizado = {
-        titulo,
-        autor,
-        isbn,
-        editorial,
-        n_paginas,
-        categoria_id_categoria,
-        estado_libro_id_estado,
-        sede_id_sede
+        nombre_libro,
+        nombre_categoria,
+        estado_libro
     };
 
     db.query('UPDATE libro SET ? WHERE id_libro = ?', [libroActualizado, libroId], (error, results) => {
@@ -60,6 +61,7 @@ export const actualizarLibro = (req, res) => {
         res.status(200).send(`Libro con ID ${libroId} actualizado exitosamente`);
     });
 };
+
 
 // Eliminar un libro
 export const eliminarLibro = (req, res) => {
